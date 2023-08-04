@@ -20,7 +20,7 @@ const RegisterForm = () => {
     const { register, control, handleSubmit, formState, getValues } = useForm<RegisterFormType>()
     const { errors } = formState
     const navigate = useNavigate();
-    const [postData, { statusText }] = usePostRequest<{ message: string }>("http://localhost:5001/api/account/register")
+    const [postData, { statusText }] = usePostRequest<{ message: string }>("http://jasper.3bbddns.com:28863/api/account/register")
 
     useEffect(() => {
         if (statusText === "Created") {

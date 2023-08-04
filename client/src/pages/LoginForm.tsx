@@ -25,7 +25,7 @@ const LoginForm = () => {
     const { register, control, handleSubmit, formState } = useForm<LoginFormType>()
     const { errors } = formState
     const navigate = useNavigate();
-    const [postData, { statusText, data }] = usePostRequest<LoginResponseType>("http://localhost:5001/api/account/login")
+    const [postData, { statusText, data }] = usePostRequest<LoginResponseType>("http://jasper.3bbddns.com:28863/api/account/login")
 
     useEffect(() => {
         if (statusText !== "OK") return

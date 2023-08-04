@@ -3,7 +3,20 @@ import { ParamsDictionary, Query } from "express-serve-static-core";
 import Joi from "joi";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import otpGenerator from "otp-generator";
 // import { AuthRequest } from "../middlewares/verifyJWT";
+import nodemailer from "nodemailer";
+const otpDb: { [key: string]: { otp: string; expiresAt: number } } = {};
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.forwardemail.net",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM",
+    pass: "REPLACE-WITH-YOUR-GENERATED-PASSWORD",
+  },
+});
 
 interface UserRegisterRequestBodyType {
   user: {
@@ -60,7 +73,7 @@ export const register: RequestHandler = async (
         password: hashPassword,
       };
 
-      await User.create(userObj)
+      await User.create(userObj);
 
       return response
         .status(201)
@@ -124,6 +137,47 @@ export const login: RequestHandler = async (
     }
 
     return response.status(200).json({ user: userAccount.toUserResponse() });
+  } catch (error) {
+    nextFunction(error);
+  }
+};
+
+interface SendEmailRequestBodyType {
+  email: string;
+}
+
+export const sendEmail: RequestHandler = async (
+  request: Request<
+    ParamsDictionary,
+    unknown,
+    SendEmailRequestBodyType,
+    Query,
+    Record<string, unknown>
+  >,
+  response: Response,
+  nextFunction: NextFunction
+) => {
+  try {
+    const { email } = request.body;
+    const otp = otpGenerator.generate(6, { digits: true, specialChars: false });
+
+    // Store OTP in the database along with expiration time
+    otpDb[email] = {
+      otp: otp,
+      expiresAt: Date.now() + 10 * 60 * 1000, // OTP expires in 10 minutes
+    };
+
+    // Send email containing the OTP to the user's email
+    const mailOptions = {
+      from: "earth1887@gmail.com", // Your email
+      to: email,
+      subject: "Your OTP",
+      text: `Your OTP is: ${otp}`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+    response.status(200).json({ message: "OTP sent successfully." });
   } catch (error) {
     nextFunction(error);
   }
