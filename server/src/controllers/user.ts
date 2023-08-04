@@ -4,19 +4,8 @@ import Joi from "joi";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
-// import { AuthRequest } from "../middlewares/verifyJWT";
 import nodemailer from "nodemailer";
 const otpDb: { [key: string]: { otp: string; expiresAt: number } } = {};
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.forwardemail.net",
-  port: 465,
-  secure: true,
-  auth: {
-    user: "REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM",
-    pass: "REPLACE-WITH-YOUR-GENERATED-PASSWORD",
-  },
-});
 
 interface UserRegisterRequestBodyType {
   user: {
@@ -159,25 +148,79 @@ export const sendEmail: RequestHandler = async (
 ) => {
   try {
     const { email } = request.body;
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return response.status(404).json({ message: "Account not found" });
+    }
+
     const otp = otpGenerator.generate(6, { digits: true, specialChars: false });
 
-    // Store OTP in the database along with expiration time
     otpDb[email] = {
       otp: otp,
-      expiresAt: Date.now() + 10 * 60 * 1000, // OTP expires in 10 minutes
+      expiresAt: Date.now() + 10 * 60 * 1000,
     };
 
-    // Send email containing the OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
     const mailOptions = {
-      from: "earth1887@gmail.com", // Your email
+      from: process.env.EMAIL_USER,
       to: email,
       subject: "Your OTP",
       text: `Your OTP is: ${otp}`,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
+    await transporter.sendMail(mailOptions);
     response.status(200).json({ message: "OTP sent successfully." });
+  } catch (error) {
+    nextFunction(error);
+  }
+};
+
+interface verifyOTPAndUpdatePasswordType {
+  password: string;
+  otp: string;
+  email: string;
+}
+
+export const verifyOTPAndUpdatePassword = async (
+  request: Request<
+    ParamsDictionary,
+    unknown,
+    verifyOTPAndUpdatePasswordType,
+    Query,
+    Record<string, unknown>
+  >,
+  response: Response,
+  nextFunction: NextFunction
+) => {
+  try {
+    const { password, email, otp } = request.body;
+
+    const otpData = otpDb[email];
+    if (!otpData || otpData.expiresAt < Date.now()) {
+      response.status(400).json({ message: "OTP expired or invalid." });
+    } else if (otpData.otp === otp) {
+      delete otpDb[email];
+
+      const user = await User.findOne({ email: email });
+
+      if (user) {
+        user.password = await bcrypt.hash(password, 10);
+        await user.save();
+      }
+
+      response.status(200).json({ message: "Password has been updated." });
+    } else {
+      response.status(400).json({ message: "OTP expired or invalid." });
+    }
   } catch (error) {
     nextFunction(error);
   }

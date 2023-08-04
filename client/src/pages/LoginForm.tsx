@@ -25,13 +25,13 @@ const LoginForm = () => {
     const { register, control, handleSubmit, formState } = useForm<LoginFormType>()
     const { errors } = formState
     const navigate = useNavigate();
-    const [postData, { statusText, data }] = usePostRequest<LoginResponseType>("http://jasper.3bbddns.com:28863/api/account/login")
+    const [postData, { statusText, data, errorMessage, hasError }] = usePostRequest<LoginResponseType>(`${import.meta.env.VITE_API_URL}/api/account/login`)
 
     useEffect(() => {
         if (statusText !== "OK") return
         if (!data) return
         localStorage.setItem("token", data.token)
-        navigate("/profile")
+        navigate("/")
     }, [data, navigate, statusText])
 
     const onSubmit = (data: LoginFormType) => {
@@ -63,12 +63,18 @@ const LoginForm = () => {
                             <span className="text-sm text-red-600">{errors.password?.message}</span>
                         </label>
                     </div>
+
+                    {hasError && <label className="flex items-center justify-between select-none">
+                        <span className="text-sm text-red-600">{errorMessage}</span>
+                    </label>}
+
                     <div className="flex justify-between"><label className="block text-gray-500 font-bold my-4"><input type="checkbox"
                         className="leading-loose text-pink-600" /> <span className="py-2 text-sm text-gray-600 leading-snug"> Remember
                             Me </span></label>  </div>
 
                     <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl">Login</button>
                     <Link to="/forgotpassword" className="text-center font-medium mt-4 cursor-pointer">Forgotten password?</Link>
+                    <Link to="/register" className="text-center font-medium mt-4 cursor-pointer">Register</Link>
                 </form>
                 <hr className="h-px my-4 bg-gray-500 border-0"></hr>
                 <h2 className="text-center font-medium">Contact Us</h2>

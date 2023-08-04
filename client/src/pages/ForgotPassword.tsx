@@ -5,20 +5,31 @@ import ytIcon from "../assets/img/icons-youtube.png"
 import lineIcon from "../assets/img/icons-line.png"
 import { useForm } from "react-hook-form"
 import { DevTool } from "@hookform/devtools"
+import { usePostRequest } from "../hook/usePostRequest"
+import { useEffect, useState } from "react"
+import ChangePasswordForm from "../components/ChangePasswordForm"
+import Loading from "../components/Loading"
 
 interface ForgotPasswordType {
     email: string
 }
 
 const ForgotPassword = () => {
-    const { register, control, handleSubmit, formState } = useForm<ForgotPasswordType>()
+    const [sendToken, setSendToken] = useState(false)
+    const { register, control, handleSubmit, formState, getValues } = useForm<ForgotPasswordType>()
     const { errors } = formState
 
+    const [postData, { statusText, data, progress, hasError, errorMessage }] = usePostRequest<{ message: string }>(`${import.meta.env.VITE_API_URL}/api/account/sendemail`)
+
+    useEffect(() => {
+        if (statusText === "OK") {
+            setSendToken(true)
+        }
+    }, [statusText, data])
 
     const onSubmit = (data: ForgotPasswordType) => {
-        console.log(data)
+        postData({ email: data.email })
     };
-
     return (
         <>
             <div className="max-w-[384px] mx-auto bg-white p-4 rounded-xl mt-20">
@@ -33,8 +44,13 @@ const ForgotPassword = () => {
                         </label>
                     </div>
 
-                    <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl">Send Reset Token</button>
+                    <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl flex items-center justify-center gap-2">{progress ? <><Loading /> Loading...</> : "Send Reset Token "}</button>
                 </form>
+                {hasError && <label className="flex items-center justify-between select-none">
+                    <span className="text-sm text-red-600">{errorMessage}</span>
+                </label>}
+
+                {sendToken && <ChangePasswordForm email={getValues("email")} />}
                 <hr className="h-px my-4 bg-gray-500 border-0"></hr>
                 <h2 className="text-center font-medium">Contact Us</h2>
                 <div className="flex items-center justify-between p-2">

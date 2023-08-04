@@ -66,6 +66,8 @@ export const usePostRequest = <T>(
           setStatusText(error.response?.statusText || null);
           setHasError(true);
           setErrorMessage(error.response?.data.message || "");
+          setProgress(null);
+          setIsLoading(false);
         }
       } finally {
         setProgress(null);

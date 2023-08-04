@@ -20,7 +20,7 @@ const RegisterForm = () => {
     const { register, control, handleSubmit, formState, getValues } = useForm<RegisterFormType>()
     const { errors } = formState
     const navigate = useNavigate();
-    const [postData, { statusText }] = usePostRequest<{ message: string }>("http://jasper.3bbddns.com:28863/api/account/register")
+    const [postData, { statusText, hasError, errorMessage }] = usePostRequest<{ message: string }>(`${import.meta.env.VITE_API_URL}/api/account/register`)
 
     useEffect(() => {
         if (statusText === "Created") {
@@ -82,6 +82,10 @@ const RegisterForm = () => {
                             <span className="text-sm text-red-600">{errors.email?.message}</span>
                         </label>
                     </div>
+
+                    {hasError && <label className="flex items-center justify-between select-none">
+                        <span className="text-sm text-red-600">{errorMessage}</span>
+                    </label>}
 
                     <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl">Register</button>
                 </form>

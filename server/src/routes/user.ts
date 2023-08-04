@@ -1,11 +1,16 @@
 import express, { Router } from "express";
-import { login, register, sendEmail } from "../controllers/user";
-// import verifyJWT from "../middlewares/verifyJWT";
+import {
+  login,
+  register,
+  sendEmail,
+  verifyOTPAndUpdatePassword,
+} from "../controllers/user";
 
 const router: Router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router.post("/sendEmail", sendEmail);
+router.post("/sendemail", sendEmail);
+router.post("/changepassword", verifyOTPAndUpdatePassword);
 
 export default router;
