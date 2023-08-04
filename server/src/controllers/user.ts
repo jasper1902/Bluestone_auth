@@ -5,6 +5,8 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
+import { logger } from "../utils/logger";
+
 const otpDb: { [key: string]: { otp: string; expiresAt: number } } = {};
 
 interface UserRegisterRequestBodyType {
@@ -118,12 +120,17 @@ export const login: RequestHandler = async (
     }
 
     const validPassword = await bcrypt.compare(password, userAccount.password);
-
     if (!validPassword) {
       return response
         .status(400)
         .json({ message: "email or password is incorrect" });
     }
+
+    logger({
+      email: userAccount.email,
+      username: userAccount.username,
+      id: userAccount._id,
+    });
 
     return response.status(200).json({ user: userAccount.toUserResponse() });
   } catch (error) {
