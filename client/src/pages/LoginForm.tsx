@@ -1,13 +1,10 @@
 import logoImage from "../assets/img/logo2.png"
-import fbIcon from "../assets/img/icons-facebook.png"
-import igIcon from "../assets/img/icons-ig.png"
-import ytIcon from "../assets/img/icons-youtube.png"
-import lineIcon from "../assets/img/icons-line.png"
 import { useForm } from "react-hook-form"
 import { DevTool } from "@hookform/devtools"
 import { usePostRequest } from "../hook/usePostRequest"
 import { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import Footer from "../components/Footer"
 
 interface LoginFormType {
     identifier: string
@@ -76,15 +73,7 @@ const LoginForm = () => {
                     <Link to="/forgotpassword" className="text-center font-medium mt-4 cursor-pointer">Forgotten password?</Link>
                     <Link to="/register" className="text-center font-medium mt-4 cursor-pointer">Register</Link>
                 </form>
-                <hr className="h-px my-4 bg-gray-500 border-0"></hr>
-                <h2 className="text-center font-medium">Contact Us</h2>
-                <div className="flex items-center justify-between p-2">
-                    <img src={fbIcon} alt="" className="h-14" />
-                    <img src={igIcon} alt="" className="h-14" />
-                    <img src={lineIcon} alt="" className="h-14" />
-                    <img src={ytIcon} alt="" className="h-14" />
-                </div>
-                <a href="https://www.bluestone.co.th/" className=""><p className="text-center font-medium">www.bluestone.co.th</p></a>
+                <Footer />
             </div>
             <DevTool control={control} />
         </>
