@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { DevTool } from "@hookform/devtools"
 import { usePostRequest } from "../hook/usePostRequest"
 import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Footer from "../components/Footer"
 
 interface RegisterFormType {
@@ -85,6 +85,7 @@ const RegisterForm = () => {
                     </label>}
 
                     <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl">Register</button>
+                    <Link to="/login" className="text-center font-medium cursor-pointer">login</Link>
                 </form>
                 <Footer />
             </div>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import ChangePasswordForm from "../components/ChangePasswordForm"
 import Loading from "../components/Loading"
 import Footer from "../components/Footer"
+import { Link } from "react-router-dom"
 
 interface ForgotPasswordType {
     email: string
@@ -42,12 +43,14 @@ const ForgotPassword = () => {
                     </div>
 
                     <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl flex items-center justify-center gap-2">{progress ? <><Loading /> Loading...</> : "Send Reset Token "}</button>
+                    <Link to="/login" className="text-center font-medium cursor-pointer">Login</Link>
                 </form>
                 {hasError && <label className="flex items-center justify-between select-none">
                     <span className="text-sm text-red-600">{errorMessage}</span>
                 </label>}
 
                 {sendToken && <ChangePasswordForm email={getValues("email")} />}
+
                 <Footer />
             </div>
             <DevTool control={control} />

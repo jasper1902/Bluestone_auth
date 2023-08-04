@@ -6,7 +6,7 @@ import lineIcon from "../assets/img/icons-line.png"
 const Footer = () => {
     return (
         <>
-            <hr className="h-px my-8 bg-gray-500 border-0"></hr>
+            <hr className="h-px mb-8 mt-4 bg-gray-500 border-0"></hr>
             <h2 className="text-center font-medium">Contact Us</h2>
             <div className="flex items-center justify-between p-2">
 

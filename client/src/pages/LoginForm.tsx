@@ -70,8 +70,8 @@ const LoginForm = () => {
                             Me </span></label>  </div>
 
                     <button type="submit" className="bg-sky-800 text-white py-2 rounded-xl">Login</button>
-                    <Link to="/forgotpassword" className="text-center font-medium mt-4 cursor-pointer">Forgotten password?</Link>
-                    <Link to="/register" className="text-center font-medium mt-4 cursor-pointer">Register</Link>
+                    <Link to="/forgotpassword" className="text-center font-medium cursor-pointer">Forgotten password?</Link>
+                    <Link to="/register" className="text-center font-medium cursor-pointer">Register</Link>
                 </form>
                 <Footer />
             </div>
