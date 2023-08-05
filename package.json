@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/jasper1902/Bluestone_auth#readme",
   "dependencies": {
-    "@types/nodemailer": "^6.4.9",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -39,6 +38,7 @@
     "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mongoose": "^5.11.97",
+    "@types/nodemailer": "^6.4.9",
     "@types/otp-generator": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
