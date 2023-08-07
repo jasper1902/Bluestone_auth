@@ -1,6 +1,5 @@
 import logoImage from "../assets/img/logo2.png"
 import { useForm } from "react-hook-form"
-import { DevTool } from "@hookform/devtools"
 import { usePostRequest } from "../hook/usePostRequest"
 import { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -12,24 +11,26 @@ interface LoginFormType {
 }
 
 interface LoginResponseType {
-    username: string
-    email: string
-    token: string
-    role: string
+    user: {
+        username: string
+        email: string
+        token: string
+        role: string
+    }
 }
 
 const LoginForm = () => {
-    const { register, control, handleSubmit, formState } = useForm<LoginFormType>()
+    const { register, handleSubmit, formState } = useForm<LoginFormType>()
     const { errors } = formState
     const navigate = useNavigate();
-    const [postData, { statusText, data, errorMessage, hasError }] = usePostRequest<LoginResponseType>(`${import.meta.env.VITE_API_URL}/api/account/login`)
+    const [postData, { statusCode, data, errorMessage, hasError }] = usePostRequest<LoginResponseType>(`${import.meta.env.VITE_API_URL}/api/account/login`)
 
     useEffect(() => {
-        if (statusText !== "OK") return
+        if (statusCode !== 200) return
         if (!data) return
-        localStorage.setItem("token", data.token)
+        localStorage.setItem("token", data.user.token)
         navigate("/")
-    }, [data, navigate, statusText])
+    }, [data, navigate, statusCode])
 
     const onSubmit = (data: LoginFormType) => {
         const obj = {
@@ -40,7 +41,6 @@ const LoginForm = () => {
         }
         postData(obj)
     };
-
     return (
         <>
             <div className="max-w-[384px] mx-auto bg-white p-4 rounded-xl mt-20">
@@ -75,7 +75,6 @@ const LoginForm = () => {
                 </form>
                 <Footer />
             </div>
-            <DevTool control={control} />
         </>
     )
 }

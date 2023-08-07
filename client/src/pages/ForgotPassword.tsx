@@ -1,6 +1,5 @@
 import logoImage from "../assets/img/logo2.png"
 import { useForm } from "react-hook-form"
-import { DevTool } from "@hookform/devtools"
 import { usePostRequest } from "../hook/usePostRequest"
 import { useEffect, useState } from "react"
 import ChangePasswordForm from "../components/ChangePasswordForm"
@@ -14,7 +13,7 @@ interface ForgotPasswordType {
 
 const ForgotPassword = () => {
     const [sendToken, setSendToken] = useState(false)
-    const { register, control, handleSubmit, formState, getValues } = useForm<ForgotPasswordType>()
+    const { register, handleSubmit, formState, getValues } = useForm<ForgotPasswordType>()
     const { errors } = formState
 
     const [postData, { statusText, data, progress, hasError, errorMessage }] = usePostRequest<{ message: string }>(`${import.meta.env.VITE_API_URL}/api/account/sendemail`)
@@ -53,7 +52,6 @@ const ForgotPassword = () => {
 
                 <Footer />
             </div>
-            <DevTool control={control} />
         </>
     )
 }

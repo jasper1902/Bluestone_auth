@@ -8,7 +8,7 @@ type ApiResponse<T> = {
   hasError: boolean;
   isLoading: boolean;
   errorMessage: string;
-  status: number | null;
+  statusCode: number | null;
   statusText: string | null;
   progress: number | null;
   error: AxiosError | null;
@@ -26,7 +26,7 @@ export const usePostRequest = <T>(
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [status, setStatus] = useState<number | null>(null);
+  const [statusCode, setStatusCode] = useState<number | null>(null);
   const [statusText, setStatusText] = useState<string | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -52,9 +52,9 @@ export const usePostRequest = <T>(
             }, 100);
           },
         });
-        if (response.statusText === "OK" || response.statusText === "Created") {
+        if (response.statusText === "OK" || response.statusText === "Created" || response.status === 200 || response.status === 201) {
           setData(response.data);
-          setStatus(response.status);
+          setStatusCode(response.status);
           setStatusText(response.statusText);
           setProgress(null);
         }
@@ -62,7 +62,7 @@ export const usePostRequest = <T>(
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setError(error);
-          setStatus(error.response?.status || null);
+          setStatusCode(error.response?.status || null);
           setStatusText(error.response?.statusText || null);
           setHasError(true);
           setErrorMessage(error.response?.data.message || "");
@@ -84,7 +84,7 @@ export const usePostRequest = <T>(
       isLoading,
       hasError,
       errorMessage,
-      status,
+      statusCode,
       statusText,
       progress,
       error,

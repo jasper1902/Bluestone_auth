@@ -1,6 +1,5 @@
 import logoImage from "../assets/img/logo2.png"
 import { useForm } from "react-hook-form"
-import { DevTool } from "@hookform/devtools"
 import { usePostRequest } from "../hook/usePostRequest"
 import { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -14,7 +13,7 @@ interface RegisterFormType {
 }
 
 const RegisterForm = () => {
-    const { register, control, handleSubmit, formState, getValues } = useForm<RegisterFormType>()
+    const { register, handleSubmit, formState, getValues } = useForm<RegisterFormType>()
     const { errors } = formState
     const navigate = useNavigate();
     const [postData, { statusText, hasError, errorMessage }] = usePostRequest<{ message: string }>(`${import.meta.env.VITE_API_URL}/api/account/register`)
@@ -89,7 +88,6 @@ const RegisterForm = () => {
                 </form>
                 <Footer />
             </div>
-            <DevTool control={control} />
         </>
     )
 }
